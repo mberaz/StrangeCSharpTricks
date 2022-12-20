@@ -1,0 +1,2 @@
+# StrangeCSharpTricks
+ StrangeCSharpTricks
