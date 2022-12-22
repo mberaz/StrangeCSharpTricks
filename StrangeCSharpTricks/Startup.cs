@@ -26,9 +26,20 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IAttributeValidator, NumberValidator>();
-            services.AddTransient<IAttributeValidator, DecimalValidator>();
-            services.AddTransient<IAttributeValidator, TextValidator>();
+            //find all implementations of this interface
+            var attributeValidatorType = typeof(IAttributeValidator);
+            var concreteTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => attributeValidatorType.IsAssignableFrom(p) && !p.IsInterface);
+
+            foreach (var type in concreteTypes)
+            {
+                services.AddTransient(attributeValidatorType, type);
+            }
+
+            //services.AddTransient<IAttributeValidator, NumberValidator>();
+            //services.AddTransient<IAttributeValidator, DecimalValidator>();
+            //services.AddTransient<IAttributeValidator, TextValidator>();
 
             services.AddTransient<IEntityValidator, EntityValidator>();
 
