@@ -1,7 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Model;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Validators;
+using StrangeCSharpTricks.TaskListTimeOut;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 {
@@ -15,6 +21,37 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
         {
             _entityValidator = entityValidator;
         }
+
+        [HttpPost("Execute")]
+        public async Task<double> Execute()
+        {
+            var timeSpan = TimeSpan.FromSeconds(5);
+            var batchSize = 10;
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(timeSpan);
+
+            var allSources = Enumerable.Range(0, 100);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            await Utils.BatchExecuteAsync(allSources, (sourcesBatch, cancellationToken) =>
+                 sourcesBatch.Select(async source =>
+                 {
+                     if (cancellationToken.IsCancellationRequested)
+                     {
+                         return Task.CompletedTask;
+                     }
+
+                     await Task.Delay(TimeSpan.FromSeconds(3));
+
+                     Debug.WriteLine(source.ToString());
+                     return Task.CompletedTask;
+                 }), cts.Token, batchSize);
+            stopwatch.Stop();
+
+            return stopwatch.Elapsed.TotalSeconds;
+        }
+
 
         [HttpPost]
         public int CreateEntity(Dictionary<string, object> values)
