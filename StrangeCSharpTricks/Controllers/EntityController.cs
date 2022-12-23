@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Model;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Validators;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Attribute = StrangeCSharpTricks.DictionaryIsTheNewIf.Model.Attribute;
 
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 {
@@ -26,8 +29,12 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
                 Values = values,
             };
 
-            var isValid = _entityValidator.Validate(entity);
+            var errors = _entityValidator.Validate(entity);
 
+            if (errors.Any())
+            {
+                throw new Exception(string.Join(", ", errors));
+            }
             return 0;
         }
 
@@ -41,7 +48,7 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
             //        { "lastName","Duck" },
             //        { "age",10 }
             //    },
-            Attributes = new List<Model.Attribute>
+            Attributes = new List<Attribute>
                 {
                     new  Attribute
                     {
