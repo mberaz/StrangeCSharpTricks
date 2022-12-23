@@ -35,8 +35,8 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Validators
                 return false;
             }
 
-            //min length
-            //max length 
+            //min
+            //max 
 
             return true;
         }
