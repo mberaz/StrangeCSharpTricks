@@ -43,27 +43,27 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
             //    },
             Attributes = new List<Model.Attribute>
                 {
-                    new Model.Attribute
+                    new  Attribute
                     {
                         Name= "firstName",
                         MaxLength= 100,
                         Type = AttributeType.Text,
                         IsRequired= true,
                     },
-                    new Model.Attribute
+                    new Attribute
                     {
                         Name= "middleName",
                         Type = AttributeType.Text,
                         IsRequired = false,
                     },
-                    new Model.Attribute
+                    new Attribute
                     {
                         Name= "lastName",
                         MaxLength= 100,
                         Type= AttributeType.Text,
                         IsRequired= true,
                     },
-                    new Model.Attribute
+                    new Attribute
                     {
                         Name= "age",
                         Type= AttributeType.Number,
