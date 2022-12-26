@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StrangeCSharpTricks.DictionaryIsTheNewIf.FileStorage;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Validators;
 using System;
 using System.Linq;
@@ -23,28 +24,30 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf
         public void ConfigureServices(IServiceCollection services)
         {
             //find all implementations of this interface
-            var attributeValidatorType = typeof(IAttributeValidator);
-            var concreteTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .Where(p => attributeValidatorType.IsAssignableFrom(p) && !p.IsInterface);
 
-            foreach (var type in concreteTypes)
-            {
-                services.AddTransient(attributeValidatorType, type);
-            }
-
-            //services.AddTransient<IAttributeValidator, NumberValidator>();
-            //services.AddTransient<IAttributeValidator, DecimalValidator>();
-            //services.AddTransient<IAttributeValidator, TextValidator>();
+            RegisterImplementations(services, typeof(IAttributeValidator));
+            RegisterImplementations(services, typeof(IFileStorageProxy));
 
             services.AddTransient<IEntityValidator, EntityValidator>();
-
+            services.AddTransient<IFileStorageHandler, FileStorageHandler>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StrangeCSharpTricks", Version = "v1" });
             });
+        }
+
+        private void RegisterImplementations(IServiceCollection services, Type interfaceType)
+        {
+            var concreteTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => interfaceType.IsAssignableFrom(p) && !p.IsInterface);
+
+            foreach (var type in concreteTypes)
+            {
+                services.AddTransient(interfaceType, type);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -15,9 +15,9 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Validators
         Dictionary<AttributeType, Func<object, Attribute, bool>> dictionary = new Dictionary<AttributeType, Func<object, Attribute, bool>>();
         public EntityValidator(IEnumerable<IAttributeValidator> attributeValidators)
         {
-            foreach (var first in attributeValidators)
+            foreach (var item in attributeValidators)
             {
-                dictionary.Add(first.Name(), first.Validate);
+                dictionary.Add(item.Name(), item.Validate);
             }
         }
 
