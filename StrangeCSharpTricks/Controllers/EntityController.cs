@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Model;
 using StrangeCSharpTricks.DictionaryIsTheNewIf.Validators;
 using System;
@@ -19,7 +20,12 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
             _entityValidator = entityValidator;
         }
 
+
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created) ]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public int CreateEntity(Dictionary<string, object> values)
         {
             var entity = new Entity
