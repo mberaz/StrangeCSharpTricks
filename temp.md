@@ -6,14 +6,14 @@
        name [stringNullable] [Required] From Path
  #### Success Output responses
  [200] Success
- Response Properties
-       name [string]
-       type [integer]
-       isRequired [boolean]
-       min [integer]
-       max [integer]
-       minLength [integer]
-       maxLength [integer]
+ #### Response Properties
+            name [string]
+            type [integer]
+            isRequired [boolean]
+            min [integer]
+            max [integer]
+            minLength [integer]
+            maxLength [integer]
  #### Bad Output responses
        [404] Not Found
 ## DELETE /Attribute/{name}
