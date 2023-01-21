@@ -21,7 +21,7 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 
             var model = SwaggerReader.ReadFromFile(fileString);
 
-            var md = MarkdownWriter.CreatMarkDown(model);
+            var md = MarkdownWriter.CreateMarkDown(model);
 
             //TODO use real path
             var filePath = @"...temp.md";
