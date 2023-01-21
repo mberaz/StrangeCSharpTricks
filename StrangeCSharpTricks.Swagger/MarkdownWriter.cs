@@ -18,7 +18,6 @@ namespace StrangeCSharpTricks.Swagger
 
             foreach (var path in openApi.Paths)
             {
-                lines.Add("#" + GetPathPrefix(path.Key));
                 foreach (var operation in path.Value.Operations)
                 {
                     lines.Add($"## {operation.Key.ToString().ToUpper()} {path.Key}");
@@ -88,12 +87,5 @@ namespace StrangeCSharpTricks.Swagger
             return string.Join(Environment.NewLine, lines);
         }
 
-
-        private static string GetPathPrefix(string path)
-        {
-            var pathParts = path.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            return pathParts.First();
-        }
     }
 }
