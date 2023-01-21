@@ -33,7 +33,7 @@ namespace StrangeCSharpTricks.Swagger
                     {
                         lines.AddRange(operation.Value.Parameters.Select(param => "       " +
                                        param.Name +
-                                       " [" + param.Schema.Type + (param.Schema.Nullable ? " Nullable" : string.Empty) + "]"
+                                       param.Schema.Type + " [" + (param.Schema.Nullable ? " Nullable" : string.Empty) + "]"
                                        + (param.Required ? " [Required] " : string.Empty)
                                        + $"From {param.In}"));
                     }

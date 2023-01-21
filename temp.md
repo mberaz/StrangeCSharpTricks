@@ -18,7 +18,7 @@
        [404] Not Found
 ## DELETE /Attribute/{name}
  #### Input Parameters
-       name [stringNullable] [Required] From Path
+       name string [Nullable] [Required] From Path
  #### Success Output responses
  [204] Success
  #### Bad Output responses
