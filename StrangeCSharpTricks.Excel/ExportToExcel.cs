@@ -11,9 +11,12 @@ namespace StrangeCSharpTricks.Excel
 
             foreach (var worksheet in worksheetList)
             {
-                var headerMap = worksheet.UserAttributeForColumnHeaders ?
-                    GetHeaderMapFromAttributes<T>() :
-                    GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>());
+                var headerMap = worksheet.ColumnNamesSource switch
+                {
+                    ColumnNamesSource.FromNameAttribute => GetHeaderMapFromAttributes<T>(),
+                    ColumnNamesSource.FromKeyAttribute=> GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
+                    _ => GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>())
+                };
 
                 var dataRows = GetExcelDictionary(worksheet.Model, headerMap);
 
@@ -171,6 +174,11 @@ namespace StrangeCSharpTricks.Excel
 
             }
             return "";
+        }
+
+        private static Dictionary<string, string> GetResourceHeaderMapFromAttributes<T>(Dictionary<string, string> resources)
+        {
+
         }
     }
 }
