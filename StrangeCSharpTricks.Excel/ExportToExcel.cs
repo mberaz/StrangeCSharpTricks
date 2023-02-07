@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
+using System.Reflection;
 
 namespace StrangeCSharpTricks.Excel
 {
@@ -14,7 +14,7 @@ namespace StrangeCSharpTricks.Excel
                 var headerMap = worksheet.ColumnNamesSource switch
                 {
                     ColumnNamesSource.FromNameAttribute => GetHeaderMapFromAttributes<T>(),
-                    ColumnNamesSource.FromKeyAttribute=> GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
+                    ColumnNamesSource.FromKeyAttribute => GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
                     _ => GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>())
                 };
 
@@ -178,7 +178,21 @@ namespace StrangeCSharpTricks.Excel
 
         private static Dictionary<string, string> GetResourceHeaderMapFromAttributes<T>(Dictionary<string, string> resources)
         {
+            var columnNames = new Dictionary<string, string>();
 
+            foreach (var property in typeof(T).GetProperties())
+            {
+                if (property.GetCustomAttribute<ExcelColumnIgnoreAttribute>() == null)
+                {
+                    var resourceKeyAttribute = property.GetCustomAttribute<ExcelColumnResourceKeyAttribute>();
+                    if (resourceKeyAttribute != null)
+                    {
+                        columnNames.Add(property.Name, resources[resourceKeyAttribute.ColumnKey]);
+                    }
+                }
+            }
+
+            return columnNames;
         }
     }
 }
