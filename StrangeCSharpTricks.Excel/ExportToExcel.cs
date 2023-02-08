@@ -5,6 +5,10 @@ namespace StrangeCSharpTricks.Excel
 {
     public static class ExportToExcel
     {
+        public static byte[] ExportWorksheets<T>(WorksheetExportModel<T> worksheet)
+        {
+            return ExportWorksheets<T>(new List<WorksheetExportModel<T>> { worksheet });
+        }
         public static byte[] ExportWorksheets<T>(List<WorksheetExportModel<T>> worksheetList)
         {
             var package = new ExcelPackage();
