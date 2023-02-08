@@ -20,10 +20,7 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
                 new ClassWithAttributeName{Email = "e.f@mail.com",FirstName = "e", LastName = "f",Id = 2},
             };
 
-            var bytes = ExportToExcel.ExportWorksheets(new List<WorksheetDataModel>
-            {
-                WorksheetDataModelCreator.CreateWorksheetDataModel(list,"ClassWithAttributeName")
-            });
+            var bytes = ExportToExcel.ExportWorksheets(WorksheetDataModelCreator.CreateWorksheetDataModel(list, "ClassWithAttributeName"));
             return ContentHelper.ToXlsxFile(bytes, "ClassWithAttributeName");
         }
 
@@ -46,10 +43,7 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
                 {"EmailKey","email"}
             };
 
-            var bytes = ExportToExcel.ExportWorksheets(new List<WorksheetDataModel>
-            {
-                  WorksheetDataModelCreator.CreateWorksheetDataModel(list,"ClassWithAttributeKey",resources)
-            });
+            var bytes = ExportToExcel.ExportWorksheets(WorksheetDataModelCreator.CreateWorksheetDataModel(list, "ClassWithAttributeKey", resources));
             return ContentHelper.ToXlsxFile(bytes, "ClassWithAttributeKey");
         }
 
@@ -64,10 +58,7 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
             };
 
             var headerNames = new List<string> { "id", "name", "second name", "email" };
-            var bytes = ExportToExcel.ExportWorksheets(new List<WorksheetDataModel>
-            {
-                WorksheetDataModelCreator.CreateWorksheetDataModel(list,"ClassWithHeaderList",headerNames)
-            });
+            var bytes = ExportToExcel.ExportWorksheets(WorksheetDataModelCreator.CreateWorksheetDataModel(list, "ClassWithHeaderList", headerNames));
             return ContentHelper.ToXlsxFile(bytes, "ClassWithHeaderList");
         }
     }
