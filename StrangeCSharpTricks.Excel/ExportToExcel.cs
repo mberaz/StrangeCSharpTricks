@@ -5,24 +5,18 @@ namespace StrangeCSharpTricks.Excel
 {
     public static class ExportToExcel
     {
-        public static byte[] ExportWorksheets<T>(WorksheetExportModel<T> worksheet)
+        public static byte[] ExportWorksheets(WorksheetDataModel worksheet)
         {
-            return ExportWorksheets<T>(new List<WorksheetExportModel<T>> { worksheet });
+            return ExportWorksheets(new List<WorksheetDataModel> { worksheet });
         }
-        public static byte[] ExportWorksheets<T>(List<WorksheetExportModel<T>> worksheetList)
+
+        public static byte[] ExportWorksheets(List<WorksheetDataModel> worksheetList)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             var package = new ExcelPackage();
 
             foreach (var worksheet in worksheetList)
             {
-                var headerMap = worksheet.ColumnNamesSource switch
-                {
-                    ColumnNamesSource.FromNameAttribute => GetHeaderMapFromAttributes<T>(),
-                    ColumnNamesSource.FromKeyAttribute => GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
-                    _ => GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>())
-                };
-
-                var dataRows = GetExcelDictionary(worksheet.Model, headerMap);
 
                 var ws = package.Workbook.Worksheets.Add(worksheet.WorksheetName);
                 ws.View.RightToLeft = worksheet.RightToLeft;
@@ -31,7 +25,7 @@ namespace StrangeCSharpTricks.Excel
 
                 //column headers
                 var colIndex = 0;
-                foreach (var x in headerMap)
+                foreach (var x in worksheet.HeaderMap)
                 {
                     ws.SetValue(titleRowsOffset + 1, colIndex + 1, x.Value);
                     ws.Cells[titleRowsOffset + 1, colIndex + 1].Style.Font.Bold = true;
@@ -42,12 +36,12 @@ namespace StrangeCSharpTricks.Excel
                 }
 
                 //data
-                for (var row = 1; row <= dataRows.Count; row++)
+                for (var row = 1; row <= worksheet.DataRows.Count; row++)
                 {
-                    var currentRow = dataRows[row - 1];
+                    var currentRow = worksheet.DataRows[row - 1];
                     var cell = 1;
 
-                    foreach (var header in headerMap)
+                    foreach (var header in worksheet.HeaderMap)
                     {
                         var isExistInDictionary = currentRow.Keys.Contains(header.Value);
 
@@ -65,6 +59,27 @@ namespace StrangeCSharpTricks.Excel
             }
 
             return package.GetAsByteArray();
+        }
+
+
+        public static WorksheetDataModel CreateWorksheetDataModel<T>(List<T> model, WorksheetExportModel worksheet)
+        {
+            var headerMap = worksheet.ColumnNamesSource switch
+            {
+                ColumnNamesSource.FromNameAttribute => GetHeaderMapFromAttributes<T>(),
+                ColumnNamesSource.FromKeyAttribute => GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
+                _ => GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>())
+            };
+
+            var dataRows = GetExcelDictionary(model, headerMap);
+
+            return new WorksheetDataModel
+            {
+                RightToLeft = worksheet.RightToLeft,
+                WorksheetName = worksheet.WorksheetName,
+                DataRows = dataRows,
+                HeaderMap = headerMap
+            };
         }
 
         private static List<Dictionary<string, ExcelCellModel>> GetExcelDictionary<T>(List<T> list, Dictionary<string, string> headerMap)

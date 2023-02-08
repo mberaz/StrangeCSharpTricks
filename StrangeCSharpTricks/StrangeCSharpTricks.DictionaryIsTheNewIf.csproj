@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StrangeCSharpTricks.Excel\StrangeCSharpTricks.Excel.csproj" />
     <ProjectReference Include="..\StrangeCSharpTricks.Swagger\StrangeCSharpTricks.Swagger.csproj" />
   </ItemGroup>
 
