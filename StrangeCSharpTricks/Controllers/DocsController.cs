@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Threading.Tasks;
-using System;
-using System.Net.Http;
 using StrangeCSharpTricks.Swagger;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Collections.Generic;
-using Microsoft.OpenApi.Readers;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 {
