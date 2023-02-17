@@ -45,12 +45,12 @@ namespace StrangeCSharpTricks.Excel
                     {
                         var isExistInDictionary = currentRow.Keys.Contains(header.Value);
 
-                        ws.SetValue(titleRowsOffset + row + 1, cell, isExistInDictionary ? currentRow[header.Value].Value2 : null);
+                        ws.SetValue(titleRowsOffset + row + 1, cell, isExistInDictionary ? currentRow[header.Value].Value : null);
                         using (var rng = ws.Cells[titleRowsOffset + row + 1, cell])
                         {
                             if (isExistInDictionary)
                             {
-                                rng.Style.Numberformat.Format = GetStringFormat(currentRow[header.Value].Value2);
+                                rng.Style.Numberformat.Format = GetStringFormat(currentRow[header.Value].Value);
                             }
                         }
                         cell++;
@@ -99,7 +99,7 @@ namespace StrangeCSharpTricks.Excel
                         row.Add(headerMap[prop.Name], new ExcelCellModel
                         {
                             Type = !isDate ? prop.PropertyType : typeof(DateTime?),
-                            Value2 = prop.GetValue(item) == null ? null : prop.GetValue(item)
+                            Value = prop.GetValue(item) == null ? null : prop.GetValue(item)
                         });
                     }
                 }
