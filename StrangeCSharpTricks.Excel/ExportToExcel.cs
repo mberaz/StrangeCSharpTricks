@@ -1,5 +1,4 @@
 ﻿using OfficeOpenXml;
-using System.Reflection;
 
 namespace StrangeCSharpTricks.Excel
 {
@@ -17,7 +16,6 @@ namespace StrangeCSharpTricks.Excel
 
             foreach (var worksheet in worksheetList)
             {
-
                 var ws = package.Workbook.Worksheets.Add(worksheet.WorksheetName);
                 ws.View.RightToLeft = worksheet.RightToLeft;
 
@@ -30,7 +28,7 @@ namespace StrangeCSharpTricks.Excel
                     ws.SetValue(titleRowsOffset + 1, colIndex + 1, x.Value);
                     ws.Cells[titleRowsOffset + 1, colIndex + 1].Style.Font.Bold = true;
                     var col = ws.Column(colIndex + 1);
-                    col.AutoFit(15);
+                    col.AutoFit(MinimumWidth: 15);
 
                     colIndex++;
                 }
@@ -43,14 +41,15 @@ namespace StrangeCSharpTricks.Excel
 
                     foreach (var header in worksheet.HeaderMap)
                     {
-                        var isExistInDictionary = currentRow.Keys.Contains(header.Value);
+                        var isExistInDictionary = currentRow.ContainsKey(header.Value);
+                        var currentValue = currentRow[header.Value];
 
-                        ws.SetValue(titleRowsOffset + row + 1, cell, isExistInDictionary ? currentRow[header.Value].Value2 : null);
-                        using (var rng = ws.Cells[titleRowsOffset + row + 1, cell])
+                        ws.SetValue(titleRowsOffset + row + 1, cell, isExistInDictionary ? currentValue.Value : null);
+                        using (var excelRange = ws.Cells[titleRowsOffset + row + 1, cell])
                         {
                             if (isExistInDictionary)
                             {
-                                rng.Style.Numberformat.Format = GetStringFormat(currentRow[header.Value].Value2);
+                                excelRange.Style.Numberformat.Format = GetStringFormat(currentValue.Value);
                             }
                         }
                         cell++;
@@ -59,95 +58,6 @@ namespace StrangeCSharpTricks.Excel
             }
 
             return package.GetAsByteArray();
-        }
-
-
-        public static WorksheetDataModel CreateWorksheetDataModel<T>(List<T> model, WorksheetExportModel worksheet)
-        {
-            var headerMap = worksheet.ColumnNamesSource switch
-            {
-                ColumnNamesSource.FromNameAttribute => GetHeaderMapFromAttributes<T>(),
-                ColumnNamesSource.FromKeyAttribute => GetResourceHeaderMapFromAttributes<T>(worksheet.Resources),
-                _ => GetHeaderMap(worksheet.ColumnHeaders, GetModelPropertiesNames<T>())
-            };
-
-            var dataRows = GetExcelDictionary(model, headerMap);
-
-            return new WorksheetDataModel
-            {
-                RightToLeft = worksheet.RightToLeft,
-                WorksheetName = worksheet.WorksheetName,
-                DataRows = dataRows,
-                HeaderMap = headerMap
-            };
-        }
-
-        private static List<Dictionary<string, ExcelCellModel>> GetExcelDictionary<T>(List<T> list, Dictionary<string, string> headerMap)
-        {
-            var dict = new List<Dictionary<string, ExcelCellModel>>();
-            var objectType = typeof(T);
-            var properties = objectType.GetProperties();
-            foreach (var item in list)
-            {
-                var row = new Dictionary<string, ExcelCellModel>();
-
-                foreach (var prop in properties)
-                {
-                    if (headerMap.ContainsKey(prop.Name))
-                    {
-                        var isDate = prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?);
-                        row.Add(headerMap[prop.Name], new ExcelCellModel
-                        {
-                            Type = !isDate ? prop.PropertyType : typeof(DateTime?),
-                            Value2 = prop.GetValue(item) == null ? null : prop.GetValue(item)
-                        });
-                    }
-                }
-                dict.Add(row);
-            }
-            return dict;
-        }
-
-        private static Dictionary<string, string> GetHeaderMap(List<string> columnHeaders, List<string> columnNames)
-        {
-            if (columnHeaders.Count != columnNames.Count)
-            {
-                throw new Exception("the columnNames and columnHeaders lists must have the same length");
-            }
-
-            var headerMap = new Dictionary<string, string>();
-
-            for (var i = 0; i < columnNames.Count; i++)
-            {
-                headerMap.Add(columnNames[i], columnHeaders[i]);
-            }
-
-            return headerMap;
-
-        }
-
-        private static Dictionary<string, string> GetHeaderMapFromAttributes<T>()
-        {
-            var columnNames = new Dictionary<string, string>();
-
-            foreach (var property in typeof(T).GetProperties())
-            {
-                if (property.GetCustomAttribute<ExcelColumnIgnoreAttribute>() == null)
-                {
-                    var columnNameAttribute = property.GetCustomAttribute<ExcelColumnNameAttribute>();
-                    if (columnNameAttribute != null)
-                    {
-                        columnNames.Add(property.Name, columnNameAttribute.ColumnName);
-                    }
-                }
-            }
-
-            return columnNames;
-        }
-
-        private static List<string> GetModelPropertiesNames<T>()
-        {
-            return typeof(T).GetProperties().Select(p => p.Name).ToList();
         }
 
         private static string GetStringFormat(object obj)
@@ -195,23 +105,5 @@ namespace StrangeCSharpTricks.Excel
             return "";
         }
 
-        private static Dictionary<string, string> GetResourceHeaderMapFromAttributes<T>(Dictionary<string, string> resources)
-        {
-            var columnNames = new Dictionary<string, string>();
-
-            foreach (var property in typeof(T).GetProperties())
-            {
-                if (property.GetCustomAttribute<ExcelColumnIgnoreAttribute>() == null)
-                {
-                    var resourceKeyAttribute = property.GetCustomAttribute<ExcelColumnResourceKeyAttribute>();
-                    if (resourceKeyAttribute != null)
-                    {
-                        columnNames.Add(property.Name, resources[resourceKeyAttribute.ColumnKey]);
-                    }
-                }
-            }
-
-            return columnNames;
-        }
     }
 }
