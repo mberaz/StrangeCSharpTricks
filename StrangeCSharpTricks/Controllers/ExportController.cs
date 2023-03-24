@@ -4,6 +4,8 @@ using StrangeCSharpTricks.DictionaryIsTheNewIf.Model.ExportModels;
 using StrangeCSharpTricks.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using StrangeCSharpTricks.Excel.Reading;
+using StrangeCSharpTricks.DictionaryIsTheNewIf.Model.ReadModels;
 
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 {
@@ -86,6 +88,17 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
                 WorksheetDataModelCreator.CreateWorksheetDataModel(list2, "ClassWithHeaderList", headerNames)
             });
             return ContentHelper.ToXlsxFile(bytes, "ClassWithAttributeName");
+        }
+
+
+        [HttpGet("Read")]
+        public async Task<IActionResult> Read()
+        {
+            const string filePath = @"E:\Torrent\Completed\column.xlsx";
+
+            var data = ExcelReader.ReadExcel<ReadByColumnName>(filePath);
+
+            return Ok(data);
         }
     }
 }
