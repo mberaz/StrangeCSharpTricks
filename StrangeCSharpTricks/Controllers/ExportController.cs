@@ -100,5 +100,15 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 
             return Ok(data);
         }
+
+        [HttpGet("TitleRead")]
+        public async Task<IActionResult> TitleRead()
+        {
+            const string filePath = @"E:\Torrent\Completed\column.xlsx";
+
+            var data = ExcelReader.ReadExcelUsingTitles<ReadByColumnTitle>(filePath);
+
+            return Ok(data);
+        }
     }
 }
