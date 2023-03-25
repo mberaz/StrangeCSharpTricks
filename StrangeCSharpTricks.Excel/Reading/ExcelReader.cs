@@ -56,7 +56,7 @@ namespace StrangeCSharpTricks.Excel.Reading
             var properties = GetProperties<T>();
 
             var propertyToColumnMapping = new Dictionary<int, PropertyInfoModel>();
-            //title row
+            //titles
             for (var col = 1; col < sheet.Dimension.End.Column + 1; col++)
             {
                 var title = sheet.Cells[titleRow, col].Value?.ToString();
@@ -70,7 +70,7 @@ namespace StrangeCSharpTricks.Excel.Reading
                 }
             }
 
-
+            //data
             for (var row = initialDataRow; row < sheet.Dimension.End.Row + 1; row++)
             {
                 var item = new T();
