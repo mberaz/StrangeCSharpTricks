@@ -1,7 +1,8 @@
 ﻿namespace StrangeCSharpTricks.Firebase;
 
-public class FireBaseConfig
+public class FireBaseConfigInfo
 {
-    public string   ApiKey { get; set; }
-    public string  BaseUrl { get; set; }
+    public string ApiKey { get; set; }
+    public string BaseUrl { get; set; }
+    public string AuthDomain { get; set; }
 }

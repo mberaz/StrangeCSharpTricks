@@ -8,7 +8,7 @@ namespace StrangeCSharpTricks.Firebase
     {
         private static FireBaseConfigInfo _configInfo = new FireBaseConfigInfo
         {
-           
+
         };
 
         private static FirebaseClient _firebaseClient = null;
@@ -22,7 +22,8 @@ namespace StrangeCSharpTricks.Firebase
         {
             var authConfig = new FirebaseAuthConfig
             {
-                ApiKey = _configInfo.ApiKey
+                ApiKey = _configInfo.ApiKey,
+                AuthDomain = _configInfo.AuthDomain
             };
             var firebaseAuthClient = new FirebaseAuthClient(authConfig);
             var userCredential = await firebaseAuthClient.SignInAnonymouslyAsync();
