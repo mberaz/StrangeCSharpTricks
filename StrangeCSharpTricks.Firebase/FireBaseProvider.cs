@@ -10,9 +10,7 @@ namespace StrangeCSharpTricks.Firebase
         //https://github.com/step-up-labs/firebase-database-dotnet
         private static readonly FireBaseConfigInfo _configInfo = new FireBaseConfigInfo
         {
-            BaseUrl = "https://chattest-fbd4c.firebaseio.com/",
-            ApiKey = "AIzaSyDFPOP75jCJ45rbduLrJZE_bMwBE_zYWoA",
-            AuthDomain = "chattest-fbd4c.firebaseapp.com"
+            
         };
 
         private static FirebaseClient _fireBaseClient = null;
