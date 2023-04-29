@@ -74,7 +74,7 @@ namespace StrangeCSharpTricks.Firebase
             return objects.ToList();
         }
 
-        public static async Task Observ<T>(string path,Action<FirebaseEvent<T>> onNext)
+        public static async Task Observe<T>(string path,Action<FirebaseEvent<T>> onNext)
         {
             var fireBaseClient = await GetFireBaseClient();
             var observable = fireBaseClient

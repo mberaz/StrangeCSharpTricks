@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using Firebase.Auth;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StrangeCSharpTricks.Firebase;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
@@ -10,12 +9,12 @@ namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
     [Route("Fire")]
     public class Fire : Controller
     {
-        [HttpGet("Observ/{userId}/Message")]
+        [HttpGet("Observe/{userId}/Message")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> Create([FromRoute] int userId)
         {
-            await FireBaseProvider.Observ<MessageModel>($"{userId}/messages", d =>
+            await FireBaseProvider.Observe<MessageModel>($"{userId}/messages", d =>
             {
                 Trace.WriteLine($"new message key {d.Key} from user {d.Object.FromUserId}");
             });
