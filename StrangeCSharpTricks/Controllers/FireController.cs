@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace StrangeCSharpTricks.DictionaryIsTheNewIf.Controllers
 {
     [Route("Fire")]
-    public class Fire : Controller
+    public class FireController : Controller
     {
         [HttpGet("Observe/{userId}/Message")]
         [ProducesResponseType(StatusCodes.Status200OK)]
